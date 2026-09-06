@@ -1,27 +1,27 @@
 import http from "node:http";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
-const __dirname = import.meta.dirname;
+import { Get , post} from "./Service/request.js";
+
 const server = http.createServer(async (req, res) => {
-  if (req.url === "/api" && req.method === "GET") {
-    try {
-      const dataPath = path.join(__dirname, "Data", "data.js");
-      const data = JSON.parse(await readFile(dataPath , "utf-8"))
-      res.writeHead(200, {
-        "access-control-allow-origin": "http://localhost:5173",
-        "content-type": "application/json",
-      });
-      res.end(JSON.stringify(data));
-    } catch (error) {
-      res.writeHead(500, { "content-type": "application/json" });
-      res.end(JSON.stringify({ error: "Unable to load sightings" }));
-    }
+  res.setHeader("access-control-allow-origin", "http://localhost:5173");
+  res.setHeader("content-type", "application/json");
+  res.setHeader("access-control-allow-headers", "Content-Type");
+
+  if (req.method === "OPTIONS") {
+    // Respond to preflight request
+    res.statusCode = 204; // No Content
+    res.end();
     return;
   }
-  else if (req.url === "/api" && req.method === "POST"){
-    
+
+  if (req.url === "/api" && req.method === "GET") {
+    await Get(res)
+    return;
+  } else if (req.url === "/api" && req.method === "POST") {
+    await post(res ,req)
+    return;
   }
-  res.writeHead(404, { "content-type": "application/json" });
+  res.statusCode = 404;
   res.end(JSON.stringify({ error: "Not found" }));
 });
-server.listen(3200, () => console.log("the server is set up"));
+
+server.listen(3200, () => console.log("The server is set up"));

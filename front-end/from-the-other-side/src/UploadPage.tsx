@@ -57,7 +57,7 @@ function UploadPage({ onNavigate }: UploadPageProps) {
 
     try {
       setMessage('')
-      const response = await fetch('/api', {
+      const response = await fetch('http://localhost:3200/api', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
