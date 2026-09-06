@@ -33,7 +33,7 @@ export async function post(res ,req) {
         const newData = JSON.parse(body);
         data.push(newData);
 
-        await writeFile(dataPath, JSON.stringify(data), "utf-8");
+        await writeFile(dataPath, JSON.stringify(data , null , 2), "utf-8");
 
         res.statusCode = 200;
         res.end(JSON.stringify({ message: "success" }));
