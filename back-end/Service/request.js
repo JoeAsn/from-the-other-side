@@ -1,5 +1,6 @@
 import path from "node:path"
 import { readFile , writeFile} from "node:fs/promises";
+import sanitizeHtml from 'sanitize-html';
 export async function Get(res) {
   let __dirname = import.meta.dirname;
   try {
@@ -31,6 +32,10 @@ export async function post(res ,req) {
         const data = JSON.parse(await readFile(dataPath, "utf-8"));
 
         const newData = JSON.parse(body);
+        console.log(newData)
+        for(let prop in newData){
+          newData[prop] = sanitizeHtml(newData[prop] ,{allowedTags : []})
+        }
         data.push(newData);
 
         await writeFile(dataPath, JSON.stringify(data , null , 2), "utf-8");
